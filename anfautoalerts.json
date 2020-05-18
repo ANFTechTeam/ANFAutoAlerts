@@ -12,7 +12,7 @@
         "type": "Microsoft.Logic/workflows",
         "apiVersion": "2017-07-01",
         "name": "[parameters('workflows_ANFAutoAlerts_name')]",
-        "location": "eastus2",
+        "location": "",
         "identity": {
             "principalId": "",
             "tenantId": "",
