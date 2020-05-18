@@ -31,7 +31,7 @@ Things it does not do, that I would like it to do in the future...
 	* Resource group: Choose the same resource group as step 2
 	* Action name: ANFAutoAlerts
 	* Action Type: Webhook
-	* URI: paste the URI from step 5 here
+	* URI: paste the URI from step 3 here
 	* Enable the common alert schema: change this to 'Yes'
 	* Click OK
 	* Click OK again
