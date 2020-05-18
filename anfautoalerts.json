@@ -5,10 +5,7 @@
         "workflows_ANFAutoAlerts_name": {
             "defaultValue": "ANFAutoAlerts",
             "type": "String"
-        },
-        "workflows_ANFAutoAlerts_location": {
-            "defaultValue": "eastus2",
-            "type": "String"
+        }
     },
     "variables": {},
     "resources": [{
