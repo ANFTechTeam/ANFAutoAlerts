@@ -1,0 +1,666 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workflows_ANFAutoAlerts_name": {
+            "defaultValue": "ANFAutoAlerts",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_ANFAutoAlerts_name')]",
+            "location": "eastus2",
+            "identity": {
+                "principalId": "ba516e69-ff5f-4c8e-9198-94ab1e407f9f",
+                "tenantId": "890df2fb-c027-40fc-88ad-7dc5308deacc",
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "triggers": {
+                        "manual": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "alertContext": {
+                                                    "properties": {
+                                                        "authorization": {
+                                                            "properties": {
+                                                                "action": {
+                                                                    "type": "string"
+                                                                },
+                                                                "scope": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "caller": {
+                                                            "type": "string"
+                                                        },
+                                                        "channels": {
+                                                            "type": "string"
+                                                        },
+                                                        "claims": {
+                                                            "type": "string"
+                                                        },
+                                                        "correlationId": {
+                                                            "type": "string"
+                                                        },
+                                                        "eventDataId": {
+                                                            "type": "string"
+                                                        },
+                                                        "eventSource": {
+                                                            "type": "string"
+                                                        },
+                                                        "eventTimestamp": {
+                                                            "type": "string"
+                                                        },
+                                                        "level": {
+                                                            "type": "string"
+                                                        },
+                                                        "operationId": {
+                                                            "type": "string"
+                                                        },
+                                                        "operationName": {
+                                                            "type": "string"
+                                                        },
+                                                        "status": {
+                                                            "type": "string"
+                                                        },
+                                                        "subStatus": {
+                                                            "type": "string"
+                                                        },
+                                                        "submissionTimestamp": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "essentials": {
+                                                    "properties": {
+                                                        "alertContextVersion": {
+                                                            "type": "string"
+                                                        },
+                                                        "alertId": {
+                                                            "type": "string"
+                                                        },
+                                                        "alertRule": {
+                                                            "type": "string"
+                                                        },
+                                                        "alertTargetIDs": {
+                                                            "items": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": "array"
+                                                        },
+                                                        "description": {
+                                                            "type": "string"
+                                                        },
+                                                        "essentialsVersion": {
+                                                            "type": "string"
+                                                        },
+                                                        "firedDateTime": {
+                                                            "type": "string"
+                                                        },
+                                                        "monitorCondition": {
+                                                            "type": "string"
+                                                        },
+                                                        "monitoringService": {
+                                                            "type": "string"
+                                                        },
+                                                        "originAlertId": {
+                                                            "type": "string"
+                                                        },
+                                                        "severity": {
+                                                            "type": "string"
+                                                        },
+                                                        "signalType": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "schemaId": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "actions": {
+                        "NetApp_Account_or_Capacity_Pool_or_Volume": {
+                            "runAfter": {
+                                "Set_Target_Resource_Group_for_Alerts": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "cases": {
+                                "Capacity_Pool": {
+                                    "case": "Microsoft.NetApp/netAppAccounts/capacityPools/write",
+                                    "actions": {
+                                        "Create_or_Modify_Capacity_Pool_Alert": {
+                                            "runAfter": {
+                                                "Parse_Capacity_Pool_JSON": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Http",
+                                            "inputs": {
+                                                "authentication": {
+                                                    "type": "ManagedServiceIdentity"
+                                                },
+                                                "body": {
+                                                    "id": "/subscriptions/@{split(triggerBody()?['data']?['alertContext']?['authorization']?['scope'],'/')[2]}/resourceGroups/@{variables('target_rg')}/providers/microsoft.insights/metricAlerts/ANFAA_Pool_@{last(split(body('Parse_Capacity_Pool_JSON')?['name'],'/'))}",
+                                                    "location": "global",
+                                                    "name": "ANFAA_Pool_@{last(split(body('Parse_Capacity_Pool_JSON')?['name'],'/'))}",
+                                                    "properties": {
+                                                        "actions": [
+                                                            {
+                                                                "actionGroupId": "/subscriptions/@{split(triggerBody()?['data']?['alertContext']?['authorization']?['scope'],'/')[2]}/resourcegroups/@{variables('target_rg')}/providers/microsoft.insights/actiongroups/@{variables('action_group')}",
+                                                                "webHookProperties": {}
+                                                            }
+                                                        ],
+                                                        "autoMitigate": true,
+                                                        "criteria": {
+                                                            "allOf": [
+                                                                {
+                                                                    "criterionType": "StaticThresholdCriterion",
+                                                                    "dimensions": [],
+                                                                    "metricName": "VolumePoolTotalLogicalSize",
+                                                                    "metricNamespace": "Microsoft.NetApp/netAppAccounts/capacityPools",
+                                                                    "monitorTemplateType": 8,
+                                                                    "name": "Metric1",
+                                                                    "operator": "GreaterThan",
+                                                                    "threshold": "@mul(body('Parse_Capacity_Pool_JSON')?['properties']?['size'],variables('CapacityAlertPercent'))",
+                                                                    "timeAggregation": "Average"
+                                                                }
+                                                            ],
+                                                            "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+                                                        },
+                                                        "description": "",
+                                                        "enabled": true,
+                                                        "evaluationFrequency": "PT1M",
+                                                        "scopes": [
+                                                            "@{triggerBody()?['data']?['alertContext']?['authorization']?['scope']}"
+                                                        ],
+                                                        "severity": 3,
+                                                        "targetResourceRegion": "@{body('Parse_Capacity_Pool_JSON')?['location']}",
+                                                        "targetResourceType": "Microsoft.NetApp/netAppAccounts/capacityPools",
+                                                        "templateType": 8,
+                                                        "windowSize": "PT5M"
+                                                    },
+                                                    "tags": {},
+                                                    "type": "Microsoft.Insights/metricAlerts"
+                                                },
+                                                "headers": {
+                                                    "Content-Type": "application/json"
+                                                },
+                                                "method": "PUT",
+                                                "uri": "https://management.azure.com/subscriptions/@{split(triggerBody()?['data']?['alertContext']?['authorization']?['scope'],'/')[2]}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/metricAlerts/ANFAA_Pool_@{last(split(body('Parse_Capacity_Pool_JSON')?['name'],'/'))}?api-version=2018-03-01"
+                                            }
+                                        },
+                                        "Get_Capacity_Pool_Details": {
+                                            "runAfter": {},
+                                            "type": "Http",
+                                            "inputs": {
+                                                "authentication": {
+                                                    "type": "ManagedServiceIdentity"
+                                                },
+                                                "method": "GET",
+                                                "uri": " https://management.azure.com@{triggerBody()?['data']?['alertContext']?['authorization']?['scope']}?api-version=2017-08-15"
+                                            }
+                                        },
+                                        "Parse_Capacity_Pool_JSON": {
+                                            "runAfter": {
+                                                "Get_Capacity_Pool_Details": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "ParseJson",
+                                            "inputs": {
+                                                "content": "@body('Get_Capacity_Pool_Details')",
+                                                "schema": {
+                                                    "properties": {
+                                                        "etag": {
+                                                            "type": "string"
+                                                        },
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "location": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "properties": {
+                                                            "properties": {
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "poolId": {
+                                                                    "type": "string"
+                                                                },
+                                                                "provisioningState": {
+                                                                    "type": "string"
+                                                                },
+                                                                "serviceLevel": {
+                                                                    "type": "string"
+                                                                },
+                                                                "size": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "type": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "NetApp_Account": {
+                                    "case": "Microsoft.NetApp/netAppAccounts/write",
+                                    "actions": {
+                                        "HTTP_2": {
+                                            "runAfter": {},
+                                            "type": "Http",
+                                            "inputs": {
+                                                "authentication": {
+                                                    "type": "ManagedServiceIdentity"
+                                                },
+                                                "method": "GET",
+                                                "uri": " https://management.azure.com@{triggerBody()?['data']?['alertContext']?['authorization']?['scope']}?api-version=2017-08-15"
+                                            }
+                                        },
+                                        "Parse_JSON_2": {
+                                            "runAfter": {
+                                                "HTTP_2": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "ParseJson",
+                                            "inputs": {
+                                                "content": "@body('HTTP_2')",
+                                                "schema": {
+                                                    "properties": {
+                                                        "etag": {
+                                                            "type": "string"
+                                                        },
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "location": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "properties": {
+                                                            "properties": {
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "provisioningState": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "type": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "Volume": {
+                                    "case": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes/write",
+                                    "actions": {
+                                        "Create_or_Modify_Volume_Alert": {
+                                            "runAfter": {
+                                                "Parse_Volume_JSON": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Http",
+                                            "inputs": {
+                                                "authentication": {
+                                                    "type": "ManagedServiceIdentity"
+                                                },
+                                                "body": {
+                                                    "id": "/subscriptions/@{split(triggerBody()?['data']?['alertContext']?['authorization']?['scope'],'/')[2]}/resourceGroups/@{variables('target_rg')}/providers/microsoft.insights/metricAlerts/ANFAA_Volume_@{last(split(body('Parse_Volume_JSON')?['name'],'/'))}",
+                                                    "location": "global",
+                                                    "name": "ANFAA_Volume_@{last(split(body('Parse_Volume_JSON')?['name'],'/'))}",
+                                                    "properties": {
+                                                        "actions": [
+                                                            {
+                                                                "actionGroupId": "/subscriptions/@{split(triggerBody()?['data']?['alertContext']?['authorization']?['scope'],'/')[2]}/resourcegroups/@{variables('target_rg')}/providers/microsoft.insights/actiongroups/@{variables('action_group')}",
+                                                                "webHookProperties": {}
+                                                            }
+                                                        ],
+                                                        "autoMitigate": true,
+                                                        "criteria": {
+                                                            "allOf": [
+                                                                {
+                                                                    "criterionType": "StaticThresholdCriterion",
+                                                                    "dimensions": [],
+                                                                    "metricName": "VolumeLogicalSize",
+                                                                    "metricNamespace": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+                                                                    "monitorTemplateType": 8,
+                                                                    "name": "Metric1",
+                                                                    "operator": "GreaterThan",
+                                                                    "threshold": "@mul(body('Parse_Volume_JSON')?['properties']?['usageThreshold'],variables('VolumeAlertPercent'))",
+                                                                    "timeAggregation": "Average"
+                                                                }
+                                                            ],
+                                                            "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+                                                        },
+                                                        "description": "",
+                                                        "enabled": true,
+                                                        "evaluationFrequency": "PT1M",
+                                                        "scopes": [
+                                                            "@{triggerBody()?['data']?['alertContext']?['authorization']?['scope']}"
+                                                        ],
+                                                        "severity": 3,
+                                                        "targetResourceRegion": "@{body('Parse_Volume_JSON')?['location']}",
+                                                        "targetResourceType": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+                                                        "templateType": 8,
+                                                        "windowSize": "PT5M"
+                                                    },
+                                                    "tags": {},
+                                                    "type": "Microsoft.Insights/metricAlerts"
+                                                },
+                                                "headers": {
+                                                    "Content-Type": "application/json"
+                                                },
+                                                "method": "PUT",
+                                                "uri": "https://management.azure.com/subscriptions/@{split(triggerBody()?['data']?['alertContext']?['authorization']?['scope'],'/')[2]}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/metricAlerts/ANFAA_Volume_@{last(split(body('Parse_Volume_JSON')?['name'],'/'))}?api-version=2018-03-01"
+                                            }
+                                        },
+                                        "Get_Volume_Details": {
+                                            "runAfter": {},
+                                            "type": "Http",
+                                            "inputs": {
+                                                "authentication": {
+                                                    "type": "ManagedServiceIdentity"
+                                                },
+                                                "method": "GET",
+                                                "uri": " https://management.azure.com@{triggerBody()?['data']?['alertContext']?['authorization']?['scope']}?api-version=2017-08-15"
+                                            }
+                                        },
+                                        "Parse_Volume_JSON": {
+                                            "runAfter": {
+                                                "Get_Volume_Details": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "ParseJson",
+                                            "inputs": {
+                                                "content": "@body('Get_Volume_Details')",
+                                                "schema": {
+                                                    "properties": {
+                                                        "etag": {
+                                                            "type": "string"
+                                                        },
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "location": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "properties": {
+                                                            "properties": {
+                                                                "baremetalTenantId": {
+                                                                    "type": "string"
+                                                                },
+                                                                "creationToken": {
+                                                                    "type": "string"
+                                                                },
+                                                                "exportPolicy": {
+                                                                    "properties": {
+                                                                        "rules": {
+                                                                            "items": {
+                                                                                "properties": {
+                                                                                    "allowedClients": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "cifs": {
+                                                                                        "type": "boolean"
+                                                                                    },
+                                                                                    "nfsv3": {
+                                                                                        "type": "boolean"
+                                                                                    },
+                                                                                    "nfsv4": {
+                                                                                        "type": "boolean"
+                                                                                    },
+                                                                                    "nfsv41": {
+                                                                                        "type": "boolean"
+                                                                                    },
+                                                                                    "ruleIndex": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "unixReadOnly": {
+                                                                                        "type": "boolean"
+                                                                                    },
+                                                                                    "unixReadWrite": {
+                                                                                        "type": "boolean"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "ruleIndex",
+                                                                                    "unixReadOnly",
+                                                                                    "unixReadWrite",
+                                                                                    "cifs",
+                                                                                    "nfsv3",
+                                                                                    "nfsv4",
+                                                                                    "nfsv41",
+                                                                                    "allowedClients"
+                                                                                ],
+                                                                                "type": "object"
+                                                                            },
+                                                                            "type": "array"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "fileSystemId": {
+                                                                    "type": "string"
+                                                                },
+                                                                "mountTargets": {
+                                                                    "items": {
+                                                                        "properties": {
+                                                                            "endIp": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "fileSystemId": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "gateway": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "ipAddress": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "mountTargetId": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "netmask": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "provisioningState": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "startIp": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "subnet": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "provisioningState",
+                                                                            "mountTargetId",
+                                                                            "fileSystemId",
+                                                                            "startIp",
+                                                                            "endIp",
+                                                                            "gateway",
+                                                                            "netmask",
+                                                                            "subnet",
+                                                                            "ipAddress"
+                                                                        ],
+                                                                        "type": "object"
+                                                                    },
+                                                                    "type": "array"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "ownerId": {
+                                                                    "type": "string"
+                                                                },
+                                                                "protocolTypes": {
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "type": "array"
+                                                                },
+                                                                "provisioningState": {
+                                                                    "type": "string"
+                                                                },
+                                                                "serviceLevel": {
+                                                                    "type": "string"
+                                                                },
+                                                                "subnetId": {
+                                                                    "type": "string"
+                                                                },
+                                                                "usageThreshold": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "usedBytes": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "tags": {
+                                                            "properties": {},
+                                                            "type": "object"
+                                                        },
+                                                        "type": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "default": {
+                                "actions": {}
+                            },
+                            "expression": "@triggerBody()?['data']?['alertContext']?['authorization']?['action']",
+                            "type": "Switch"
+                        },
+                        "Set_Capacity_Pool_Alert_Percentage_(consumed)": {
+                            "runAfter": {},
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "CapacityAlertPercent",
+                                        "type": "float",
+                                        "value": 0.8
+                                    }
+                                ]
+                            }
+                        },
+                        "Set_Existing_Action_Group_for_Alerts": {
+                            "runAfter": {
+                                "Set_Volume_Alert_Percentage_(consumed)": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "action_group",
+                                        "type": "string",
+                                        "value": "seanluce"
+                                    }
+                                ]
+                            }
+                        },
+                        "Set_Target_Resource_Group_for_Alerts": {
+                            "runAfter": {
+                                "Set_Existing_Action_Group_for_Alerts": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "target_rg",
+                                        "type": "string",
+                                        "value": "sluce.rg"
+                                    }
+                                ]
+                            }
+                        },
+                        "Set_Volume_Alert_Percentage_(consumed)": {
+                            "runAfter": {
+                                "Set_Capacity_Pool_Alert_Percentage_(consumed)": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "VolumeAlertPercent",
+                                        "type": "float",
+                                        "value": 0.8
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {}
+            }
+        }
+    ]
+}
