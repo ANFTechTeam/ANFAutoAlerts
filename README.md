@@ -1,16 +1,14 @@
 # ANFAutoAlerts
 ### An Azure Logic App that automates the creation and updating of capacity based alerts for Azure NetApp Files.
 
-Why? Currently, Azure NetApp Files consumption based alerts can only be specified in bytes. When a capacity pool or volume is resized, the alert threshold remains at the original specified bytes.
-
-What does it do?
+Things it does...
 
 1. When an Azure NetApp Files Capacity Pool is created, ANFAutoAlerts creates an alert rule based on the specified percent capacity consumed.
-2. When an Azure NetApp Files Volume is created, ANFAutoAlerts creates an alert rule based on the specified percent capacity consumed.
+2. When and Azure NetApp Files Volume is created, ANFAutoAlerts creates an alert rule based on the specified percent capacity consumed.
 3. When an Azure NetApp Files Capacity Pool is resized, ANFAutoAlerts modifies an alert rule based on the specified percent capacity consumed. If the alert rule does not exist, it will be created.
 4. When and Azure NetApp Files Volume is resized, ANFAutoAlerts modifies an alert rule based on the specified percent capacity consumed. If the alert rule does not exist, it will be created.
 
-Things it does not do, that I would like it to do in the future...
+Things is does not do, that I would like it to do in the future...
 
 1. Delete alert rules when a capacity pool or volume is deleted.
 2. <del>Fully</del> More automated deployment.
@@ -19,48 +17,27 @@ Things it does not do, that I would like it to do in the future...
 # Installation
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FANFTechTeam%2FANFAutoAlerts%2Fmaster%2Fanfautoalerts.json)
 
-1. Click the button above to deploy this Logic App to Azure.
+1. Click the button above to deploy this Logic App to Azure. Complete the four fields:
 
-2. Give your new Logic App permission to create and modify resources within your resource group: Navigate to Resource groups, choose your resource group that will contain your Azure NetApp Files resources. Choose 'Access control (IAM)' from the menu. Click the '+ Add' button and choose 'Add role assignment'. For the 'Role', choose Owner. For 'Assign access to', choose Logic App, now select 'ANFAutoAlerts'. Finally, click the 'Save' button.
+	* Resource group *, this is wher the Logic App will live
+	* Location *, this is the region where your Logic App will be deployed
+	* Logic App Name, any name you would like, the default is recommended
+	* Target Resource Group for Alerts, new alerts will be created here
+	* Target Resource Group to Monitor, this is the resource group that we will monitor for new ANF resources
+	* Subscription ID, this is needed to build some of the framework
+	* Action Group for Notification, this is the action group that will be used for capacity based alert. This should be pre-created. 
 
-3. Get your Logic App's webhook URL: Navigate to your newly deployed Logic App titled ANFAutoAlerts, select 'Logic app designer' under 'Development Tools'. In the main designer pane, click the first box titled "When a HTTP request is recieved". Copy the 'HTTP POST URL' to your clipboard or text editor of your choice, you'll need it for the next step.
+2. Give your new Logic App permission to create and modify resources within your resource group(s): Navigate to Resource groups, choose your resource group that will contain your Azure NetApp Files resources. Choose 'Access control (IAM)' from the menu. Click the '+ Add' button and choose 'Add role assignment'. For the 'Role', choose Owner. For 'Assign access to', choose Logic App, now select 'ANFAutoAlerts'. Finally, click the 'Save' button.
 
-4. Create the primary action group: Navigate to 'Alerts', choose 'Manage actions', and 'Add action group'.
-	* Action group name: ANFAA_ActionGroup
-	* Short name: ANFAA_AG
-	* Resource group: Choose the same resource group as step 2
-	* Action name: ANFAutoAlerts
-	* Action Type: Webhook
-	* URI: paste the URI from step 3 here
-	* Enable the common alert schema: change this to 'Yes'
-	* Click OK
-	* Click OK again
+3. Get your Logic App's webhook URI: Navigate to your newly deployed Logic App titled ANFAutoAlerts, select 'Logic app designer' under 'Development Tools'. In the main designer pane, click the first box titled "When a HTTP request is recieved". Copy the 'HTTP POST URI' to your clipboard or text editor of your choice, you'll need it for the next step.
 
-5. Create the Capacity Pool alert rule: Go back to 'Alerts' and choose '+ New alert rule', click on 'Select resource', use 'Filter by resource type' and choose 'Capacity Pools', select your Resource group from step 2 and click 'Done'. Click 'Select condition', and choose 'Write pool resource...', change the 'Status' to 'Succeeded' and click 'Done'.
+4. Update the Action Group with your URI: Navigate to Alerts, Manage actions, select 'ANFAA_LogicAppTrigger', choose 'Edit details' in the right hand pane under 'Actions', paste the URI from the previous step in to the URI field.
 
-	* Alert rule name: ANFAA_CapacityPool
-	* Description: Calls the ANFAutoAlerts Logic App when a Capacity Pool is created or modified.
-	* Save alert to resource group: choose the resource group from step 2.
-	* Enable alert rule upon creation: leave this checked
+4. Run the Logic App manually to build the supporting resources
 
-	Click 'Select action group' and select 'ANFAA_ActionGroup'.
-
-6. Create the Volume alert rule: Go back to 'Alerts' and choose '+ New alert rule', click on 'Select resource', use 'Filter by resource type' and choose 'Volumes', select your Resource group from step 2 and click 'Done'. Click 'Select condition', and choose 'Write volume resource...', change the 'Status' to 'Succeeded' and click 'Done'.
-
-	* Alert rule name: ANFAA_Volume
-	* Description: Calls the ANFAutoAlerts Logic App when a Volume is created or modified.
-	* Save alert to resource group: choose the resource group from step 2.
-	* Enable alert rule upon creation: leave this checked
-
-	Click 'Select action group' and select 'ANFAA_ActionGroup'
-
-	These two alert rules will call our logic app when a capacity pool or volume is created or modified.
-
-7. Create the secondary action group (easier if it does not have any spaces in the name) that will be used to notify you and/or your staff when a capacity pool or volume has reached the specified percent full amount. This action group could send an email, sms, or any other notification method that suites you. Once you have it created, take note of the name. If you already have one created, you can skip this step.
-
-8. Configure the ANFAutoAlerts Logic App: Navigate back to Logic Apps, choose 'ANFAutoAlerts', and select 'Logic app designer'.
+5. Configure the ANFAutoAlerts Logic App: Navigate back to Logic Apps, choose 'ANFAutoAlerts', and select 'Logic app designer'.
 	
-	Modify the four variables:
+	Modify the two variables as needed:
     * Set Capacity Pool Alert Percentage (consumed)
        * default is 0.8 (80%)
        * leading zero (0) is required
@@ -69,11 +46,7 @@ Things it does not do, that I would like it to do in the future...
        * default is 0.8 (80%) 
        * leading zero (0) is required
        * This is the consumed threshold for Volumes that will fire the alert
-    * Set Existing Action Group for Alerts
-    	* Specify the name of the action group you created in step 7.
-
-    * Set Target Resource Group for Alerts
-       * Specify the resource group from step 2.
+  
 
 That's it! When you create (or modify) a capacity pool or volume, the Logic App will automatically create (or modify) a capacity based alert with the name 'ANFAA\_Pool\_*poolname*' or 'ANFAA\_Volume\_*poolname*_*volname*'.
 
