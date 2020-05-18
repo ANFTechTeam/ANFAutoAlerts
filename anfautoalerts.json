@@ -755,7 +755,7 @@
                                             "type": "Microsoft.Insights/ActivityLogAlerts"
                                         },
                                         "method": "PUT",
-                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_PoolModified?api-version=2018-03-01"
+                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_PoolModified?api-version=2017-04-01"
                                     }
                                 },
                                 "Create_Trigger_Alert_for_Volume": {
@@ -826,7 +826,7 @@
                                             "type": "Microsoft.Insights/ActivityLogAlerts"
                                         },
                                         "method": "PUT",
-                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_VolumeModified?api-version=2018-03-01"
+                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_VolumeModified?api-version=2017-04-01"
                                     }
                                 },
                                 "Get_URL_of_this_Logic_App": {
