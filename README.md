@@ -75,5 +75,5 @@ Things it does not do, that I would like it to do in the future...
     * Set Target Resource Group for Alerts
        * Specify the resource group from step 2.
 
-That's it! When you create (or modify) a capacity pool or volume, the Logic App will automatically create (or modify) a capacity based alert with the name 'ANFAA\_Pool\_*poolname*' or 'ANFAA\_Volume\_*volname*'.
+That's it! When you create (or modify) a capacity pool or volume, the Logic App will automatically create (or modify) a capacity based alert with the name 'ANFAA\_Pool\_*poolname*' or 'ANFAA\_Volume\_*poolname*_*volname*'.
 
