@@ -1,7 +1,9 @@
 # ANFAutoAlerts
 ### An Azure Logic App that automates the creation and updating of capacity based alerts for Azure NetApp Files.
 
-Things it does...
+Why? Currently, Azure NetApp Files consumption based alerts can only be specified in bytes. When a capacity pool or volume is resized, the alert threshold remains at the original specified bytes.
+
+What does it do?
 
 1. When an Azure NetApp Files Capacity Pool is created, ANFAutoAlerts creates an alert rule based on the specified percent capacity consumed.
 2. When and Azure NetApp Files Volume is created, ANFAutoAlerts creates an alert rule based on the specified percent capacity consumed.
