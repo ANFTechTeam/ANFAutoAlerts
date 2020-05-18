@@ -5,14 +5,17 @@
         "workflows_ANFAutoAlerts_name": {
             "defaultValue": "ANFAutoAlerts",
             "type": "String"
-        }
+        },
+        "workflows_ANFAutoAlerts_location": {
+            "defaultValue": "eastus2",
+            "type": "String"
     },
     "variables": {},
     "resources": [{
         "type": "Microsoft.Logic/workflows",
         "apiVersion": "2017-07-01",
         "name": "[parameters('workflows_ANFAutoAlerts_name')]",
-        "location": "",
+        "location": "[parameters('workflows_ANFAutoAlerts_location')]",
         "identity": {
             "principalId": "",
             "tenantId": "",
