@@ -15,8 +15,8 @@
             "name": "[parameters('workflows_ANFAutoAlerts_name')]",
             "location": "eastus2",
             "identity": {
-                "principalId": "ba516e69-ff5f-4c8e-9198-94ab1e407f9f",
-                "tenantId": "890df2fb-c027-40fc-88ad-7dc5308deacc",
+                "principalId": "",
+                "tenantId": "",
                 "type": "SystemAssigned"
             },
             "properties": {
