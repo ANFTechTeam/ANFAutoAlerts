@@ -23,7 +23,7 @@
             "type": "String"
         },
         "Existing Action Group for Capacity Notifications": {
-            "defaultValue": "80",
+            "defaultValue": "CapacityFullNotification",
             "type": "String"
         }
     },
@@ -32,7 +32,7 @@
         "type": "Microsoft.Logic/workflows",
         "apiVersion": "2017-07-01",
         "name": "[parameters('Logic App Name')]",
-        "location": "",
+        "location": "eastus2",
         "identity": {
             "principalId": "",
             "tenantId": "",
