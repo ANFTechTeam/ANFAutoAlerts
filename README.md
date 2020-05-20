@@ -17,7 +17,7 @@ Things is does not do, that I would like it to do in the future...
 # Installation
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FANFTechTeam%2FANFAutoAlerts%2Fmaster%2Fanfautoalerts.json)
 
-1. Click the button above to deploy this Logic App to Azure. Complete the four fields:
+1. Click the button above to deploy this Logic App to Azure. Complete the following fields:
 
 	* Resource group *, this is where the Logic App will live
 	* Location *, this is the region where your Logic App will be deployed
@@ -29,13 +29,14 @@ Things is does not do, that I would like it to do in the future...
 
 2. Give your new Logic App permission to create and modify resources within your resource group(s): Navigate to Resource groups, choose your resource group that will contain your Azure NetApp Files resources. Choose 'Access control (IAM)' from the menu. Click the '+ Add' button and choose 'Add role assignment'. For the 'Role', choose Owner. For 'Assign access to', choose Logic App, now select 'ANFAutoAlerts'. Finally, click the 'Save' button.
 
-3. Get your Logic App's webhook URI: Navigate to your newly deployed Logic App titled ANFAutoAlerts, select 'Logic app designer' under 'Development Tools'. In the main designer pane, click the first box titled "When a HTTP request is recieved". Copy the 'HTTP POST URI' to your clipboard or text editor of your choice, you'll need it for the next step.
+3. Run the Logic App manually to build the supporting resources: Navigate to your Logic App and choose Run Trigger, Manual
+   Running the Logic App manually kicks off a special workflow that does the following:
+   
+    * Creates an Alert Group called 'ANFAA_LogicAppTrigger', to be called when a new volume or capacity pool is created
+    * Creates an Alert called 'ANFAA_VolumeModified' to trigger whenever a volume is created or modified
+    * Creates an Alert called 'ANFAA_PoolModified' to trigger whenever a capacity pool is created or modified
 
-4. Update the Action Group with your URI: Navigate to Alerts, Manage actions, select 'ANFAA_LogicAppTrigger', choose 'Edit details' in the right hand pane under 'Actions', paste the URI from the previous step in to the URI field.
-
-4. Run the Logic App manually to build the supporting resources. Navigate to your Logic App and choose 
-
-5. Configure the ANFAutoAlerts Logic App: Navigate back to Logic Apps, choose 'ANFAutoAlerts', and select 'Logic app designer'.
+4. Modify the ANFAutoAlerts Logic App capacity threshholds as needed: Navigate back to Logic Apps, choose your Logic App, and select 'Logic app designer'.
 	
 	Modify the two variables as needed:
     * Set Capacity Pool Alert Percentage (consumed)
