@@ -19,7 +19,7 @@ Things is does not do, that I would like it to do in the future...
 
 1. Click the button above to deploy this Logic App to Azure. Complete the four fields:
 
-	* Resource group *, this is wher the Logic App will live
+	* Resource group *, this is where the Logic App will live
 	* Location *, this is the region where your Logic App will be deployed
 	* Logic App Name, any name you would like, the default is recommended
 	* Target Resource Group for Alerts, new alerts will be created here
@@ -33,7 +33,7 @@ Things is does not do, that I would like it to do in the future...
 
 4. Update the Action Group with your URI: Navigate to Alerts, Manage actions, select 'ANFAA_LogicAppTrigger', choose 'Edit details' in the right hand pane under 'Actions', paste the URI from the previous step in to the URI field.
 
-4. Run the Logic App manually to build the supporting resources
+4. Run the Logic App manually to build the supporting resources. Navigate to your Logic App and choose 
 
 5. Configure the ANFAutoAlerts Logic App: Navigate back to Logic Apps, choose 'ANFAutoAlerts', and select 'Logic app designer'.
 	
