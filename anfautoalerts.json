@@ -167,7 +167,7 @@
                 "actions": {
                     "Change_Capacity_Pool_String_to_Float_and_Divide_by_100": {
                         "runAfter": {
-                            "Set_Volume_Alert_Percentage_(consumed)": [
+                            "Change_Volume_String_to_Float_and_Divide_by_100": [
                                 "Succeeded"
                             ]
                         },
@@ -182,7 +182,7 @@
                     },
                     "Change_Volume_String_to_Float_and_Divide_by_100": {
                         "runAfter": {
-                            "Change_Capacity_Pool_String_to_Float_and_Divide_by_100": [
+                            "Set_Volume_Alert_Percentage_(consumed)": [
                                 "Succeeded"
                             ]
                         },
@@ -324,7 +324,7 @@
                     },
                     "Set_Target_Resource_Group_to_Monitor": {
                         "runAfter": {
-                            "Set_Volume_Alert_Percentage_(consumed)": [
+                            "Change_Capacity_Pool_String_to_Float_and_Divide_by_100": [
                                 "Succeeded"
                             ]
                         },
@@ -1084,11 +1084,11 @@
                                             "type": "ManagedServiceIdentity"
                                         },
                                         "body": {
-                                            "id": "/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/actionGroups/ANFAA_LogicAppTrigger",
+                                            "id": "/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/actionGroups/ANFAA_LogicAppTrigger_@{variables('monitor_rg')}",
                                             "identity": null,
                                             "kind": null,
                                             "location": "Global",
-                                            "name": "ANFAA_LogicAppTrigger",
+                                            "name": "ANFAA_LogicAppTrigger_@{variables('monitor_rg')}",
                                             "properties": {
                                                 "armRoleReceivers": [],
                                                 "automationRunbookReceivers": [],
@@ -1118,7 +1118,7 @@
                                             "Content-Type": "application/json"
                                         },
                                         "method": "PUT",
-                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/actionGroups/ANFAA_LogicAppTrigger?api-version=2018-03-01"
+                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/actionGroups/ANFAA_LogicAppTrigger_@{variables('monitor_rg')}?api-version=2018-03-01"
                                     }
                                 },
                                 "Create_Trigger_Alert_for_Capacity_Pool_Create_or_Modify": {
@@ -1137,11 +1137,11 @@
                                             "identity": null,
                                             "kind": null,
                                             "location": "Global",
-                                            "name": "ANFAA_PoolModified",
+                                            "name": "ANFAA_PoolModified_@{variables('monitor_rg')}",
                                             "properties": {
                                                 "actions": {
                                                     "actionGroups": [{
-                                                        "actionGroupId": "/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/actionGroups/ANFAA_LogicAppTrigger",
+                                                        "actionGroupId": "/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/actionGroups/ANFAA_LogicAppTrigger_@{variables('monitor_rg')}",
                                                         "webhookProperties": {}
                                                     }]
                                                 },
@@ -1189,7 +1189,7 @@
                                             "type": "Microsoft.Insights/ActivityLogAlerts"
                                         },
                                         "method": "PUT",
-                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_PoolModified?api-version=2017-04-01"
+                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_PoolModified_@{variables('monitor_rg')}?api-version=2017-04-01"
                                     }
                                 },
                                 "Create_Trigger_Alert_for_Capacity_Pool_Deleted": {
@@ -1208,11 +1208,11 @@
                                             "identity": null,
                                             "kind": null,
                                             "location": "Global",
-                                            "name": "ANFAA_PoolDeleted",
+                                            "name": "ANFAA_PoolDeleted_@{variables('monitor_rg')}",
                                             "properties": {
                                                 "actions": {
                                                     "actionGroups": [{
-                                                        "actionGroupId": "/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/actionGroups/ANFAA_LogicAppTrigger",
+                                                        "actionGroupId": "/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/actionGroups/ANFAA_LogicAppTrigger_@{variables('monitor_rg')}",
                                                         "webhookProperties": {}
                                                     }]
                                                 },
@@ -1260,7 +1260,7 @@
                                             "type": "Microsoft.Insights/ActivityLogAlerts"
                                         },
                                         "method": "PUT",
-                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_PoolDeleted?api-version=2017-04-01"
+                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_PoolDeleted_@{variables('monitor_rg')}?api-version=2017-04-01"
                                     }
                                 },
                                 "Create_Trigger_Alert_for_Volume_Create_or_Modify": {
@@ -1275,15 +1275,15 @@
                                             "type": "ManagedServiceIdentity"
                                         },
                                         "body": {
-                                            "id": "/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_VolumeModified",
+                                            "id": "/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_VolumeModified_@{variables('monitor_rg')}",
                                             "identity": null,
                                             "kind": null,
                                             "location": "Global",
-                                            "name": "ANFAA_VolumeModified",
+                                            "name": "ANFAA_VolumeModified_@{variables('monitor_rg')}",
                                             "properties": {
                                                 "actions": {
                                                     "actionGroups": [{
-                                                        "actionGroupId": "/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/actionGroups/ANFAA_LogicAppTrigger",
+                                                        "actionGroupId": "/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/actionGroups/ANFAA_LogicAppTrigger_@{variables('monitor_rg')}",
                                                         "webhookProperties": {}
                                                     }]
                                                 },
@@ -1331,7 +1331,7 @@
                                             "type": "Microsoft.Insights/ActivityLogAlerts"
                                         },
                                         "method": "PUT",
-                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_VolumeModified?api-version=2017-04-01"
+                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_VolumeModified_@{variables('monitor_rg')}?api-version=2017-04-01"
                                     }
                                 },
                                 "Create_Trigger_Alert_for_Volume_Deleted": {
@@ -1346,15 +1346,15 @@
                                             "type": "ManagedServiceIdentity"
                                         },
                                         "body": {
-                                            "id": "/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_VolumeDeleted",
+                                            "id": "/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_VolumeDeleted_@{variables('monitor_rg')}",
                                             "identity": null,
                                             "kind": null,
                                             "location": "Global",
-                                            "name": "ANFAA_VolumeDeleted",
+                                            "name": "ANFAA_VolumeDeleted_@{variables('monitor_rg')}",
                                             "properties": {
                                                 "actions": {
                                                     "actionGroups": [{
-                                                        "actionGroupId": "/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/actionGroups/ANFAA_LogicAppTrigger",
+                                                        "actionGroupId": "/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/actionGroups/ANFAA_LogicAppTrigger_@{variables('monitor_rg')}",
                                                         "webhookProperties": {}
                                                     }]
                                                 },
@@ -1402,7 +1402,7 @@
                                             "type": "Microsoft.Insights/ActivityLogAlerts"
                                         },
                                         "method": "PUT",
-                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_VolumeDeleted?api-version=2017-04-01"
+                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('target_rg')}/providers/Microsoft.Insights/activityLogAlerts/ANFAA_VolumeDeleted_@{variables('monitor_rg')}?api-version=2017-04-01"
                                     }
                                 },
                                 "Get_URL_of_this_Logic_App": {
