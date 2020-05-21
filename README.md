@@ -58,7 +58,7 @@ Modify the two variables as needed:
    * Set Volume Alert Percentage (consumed)
       * default is 80 (80%) 
 
-For this to have an effect on existing volumes, you will need to resize them (and the resize them back) to trigger the Logic App.
+For this to have an effect on existing volumes, you will need to resize them to trigger the Logic App.
 
 Please reach out if you have any questions or feature requests.
 
