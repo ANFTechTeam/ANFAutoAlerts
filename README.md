@@ -31,7 +31,12 @@
    * *Volume % Full Threshold*; This determines the consumed threshold that triggers an alert for volumes. A value of 80 would cause an alert to be triggered when the volume reaches 80% consumed.
 	* *Existing Action Group for Capacity Notifications*; this is the action group that will be triggered for capacity based alerting. This should be pre-created by you. This action group could send email/sms/webhook, or anything else you would like. If it doesn't exist at the time of deployment, that is fine, as long as you create it before you continue to step 2.
 
+![Deploy Fields](./img/deploy.png)
+
 2. Give your new Logic App permission to create and modify resources within your resource group: Navigate to Resource groups, choose the resource group that you specified for 'Target Resource Group for Alerts'. Choose 'Access control (IAM)' from the menu. Click the '+ Add' button and choose 'Add role assignment'. For the 'Role', choose Contributor. For 'Assign access to', choose Logic App, now select 'ANFAutoAlerts' (or the name you specified in step 1). Finally, click the 'Save' button.
+
+![Add Role to RG](./img/addrole.png)
+![Choose Logic App](./img/chooselogicapp.png)
 
 3. **IMPORTANT:** Run the Logic App manually to build the supporting resources: Navigate to your Logic App and choose Run Trigger, Manual.
    Running the Logic App manually kicks off a special workflow that does the following:
@@ -39,6 +44,8 @@
    * Creates an Alert Group called 'ANFAA_LogicAppTrigger\_*monitor_rg*', this alert group calls the logic app when a new volume or capacity pool is created, modified, or deleted.
    * Creates an Alert called 'ANFAA_VolumeModified\_*monitor_rg*' to trigger the Alert Group whenever a volume is created or modified.
    * Creates an Alert called 'ANFAA_PoolModified\_*monitor_rg*' to trigger the Alert Group whenever a capacity pool is created, modified, or deleted.
+
+![Manual Trigger](./img/manualtrigger.png)
 
 That's it! When you create, modify, or delete a capacity pool or volume, the Logic App will automatically create (or modify, or delete) a capacity based alert with the name 'ANFAA\_Pool\_*poolname*' or 'ANFAA\_Volume\_*poolname*_*volname*'. Make sure you test functionality by creating a capacity pool and volume and verifying that the alerts get created.
 
