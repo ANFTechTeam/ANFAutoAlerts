@@ -7,7 +7,7 @@
 2. When an Azure NetApp Files Volume is created, ANFAutoAlerts creates an alert rule based on the specified percent capacity consumed.
 3. When an Azure NetApp Files Capacity Pool is resized, ANFAutoAlerts modifies an alert rule based on the specified percent capacity consumed. If the alert rule does not exist, it will be created.
 4. When an Azure NetApp Files Volume is resized, ANFAutoAlerts modifies an alert rule based on the specified percent capacity consumed. If the alert rule does not exist, it will be created.
-5. When an Azure NetApp Files Capacity Pool or Volume is deleted, the corresponding alert(s) will also be delted.
+5. When an Azure NetApp Files Capacity Pool or Volume is deleted, the corresponding alert(s) will also be deleted.
 
 ### Things it does not do, that I would like it to do in the future...
 
