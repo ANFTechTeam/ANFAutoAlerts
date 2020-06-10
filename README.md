@@ -33,7 +33,7 @@
 
 ![Deploy Fields](./img/deploy.png)
 
-2. Give your new Logic App permission to create and modify resources within your resource group: Navigate to Resource groups, choose the resource group that you specified for 'Target Resource Group for Alerts'. Choose 'Access control (IAM)' from the menu. Click the '+ Add' button and choose 'Add role assignment'. For the 'Role', choose Contributor. For 'Assign access to', choose Logic App, now select 'ANFAutoAlerts' (or the name you specified in step 1). Finally, click the 'Save' button.
+2. Give your new Logic App permissions to read, create, and modify resources within your resource group: Navigate to Resource groups, choose the resource group that you specified for 'Target Resource Group for Alerts'. Choose 'Access control (IAM)' from the menu. Click the '+ Add' button and choose 'Add role assignment'. For the 'Role', choose Contributor. For 'Assign access to', choose Logic App, now select 'ANFAutoAlerts' (or the name you specified in step 1).Finally, click the 'Save' button. Next, navigate to the resource group you specified for 'Target Resource Group to Monitor' and give the Logic App 'Reader' access.
 
 ![Add Role to RG](./img/addrole.png)
 ![Choose Logic App](./img/chooselogicapp.png)
@@ -43,8 +43,10 @@
    
    * Creates an Alert Group called 'ANFAA_LogicAppTrigger\_*monitor_rg*', this alert group calls the logic app when a new volume or capacity pool is created, modified, or deleted.
    * Creates an Alert called 'ANFAA_VolumeModified\_*monitor_rg*' to trigger the Alert Group whenever a volume is created or modified.
-   * Creates an Alert called 'ANFAA_PoolModified\_*monitor_rg*' to trigger the Alert Group whenever a capacity pool is created, modified, or deleted.
-
+   * Creates an Alert called 'ANFAA_PoolModified\_*monitor_rg*' to trigger the Alert Group whenever a capacity pool is created or modified.
+   * Creates an Alert called 'ANFAA_VolumeDeleted\_*monitor_rg*' to trigger the Alert Group whenever a volume is deleted.
+   * Creates an Alert called 'ANFAA_PoolDeleted\_*monitor_rg*' to trigger the Alert Group whenever a pool is deleted.
+   
 ![Manual Trigger](./img/manualtrigger.png)
 
 That's it! When you create, modify, or delete a capacity pool or volume, the Logic App will automatically create (or modify, or delete) a capacity based alert with the name 'ANFAA\_Pool\_*poolname*' or 'ANFAA\_Volume\_*poolname*_*volname*'. Make sure you test functionality by creating a capacity pool and volume and verifying that the alerts get created.
