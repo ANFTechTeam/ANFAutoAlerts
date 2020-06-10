@@ -33,7 +33,7 @@
 
 ![Deploy Fields](./img/deploy.png)
 
-2. Give your new Logic App permissions to read, create, and modify resources within your resource group: Navigate to Resource groups, choose the resource group that you specified for 'Target Resource Group for Alerts'. Choose 'Access control (IAM)' from the menu. Click the '+ Add' button and choose 'Add role assignment'. For the 'Role', choose Contributor. For 'Assign access to', choose Logic App, now select 'ANFAutoAlerts' (or the name you specified in step 1).Finally, click the 'Save' button. Next, navigate to the resource group you specified for 'Target Resource Group to Monitor' and give the Logic App 'Reader' access.
+2. Give your new Logic App permissions to read, create, and modify resources within your resource group: Navigate to Resource groups, choose the resource group that you specified for 'Target Resource Group for Alerts'. Choose 'Access control (IAM)' from the menu. Click the '+ Add' button and choose 'Add role assignment'. For the 'Role', choose Contributor. For 'Assign access to', choose Logic App, now select 'ANFAutoAlerts' (or the name you specified in step 1). Finally, click the 'Save' button. Next, navigate to the resource group you specified for 'Target Resource Group to Monitor' and repeat to give the Logic App 'Reader' access to this resource group.
 
 ![Add Role to RG](./img/addrole.png)
 ![Choose Logic App](./img/chooselogicapp.png)
