@@ -779,16 +779,7 @@
                                                                                                     "type": "boolean"
                                                                                                 }
                                                                                             },
-                                                                                            "required": [
-                                                                                                "ruleIndex",
-                                                                                                "unixReadOnly",
-                                                                                                "unixReadWrite",
-                                                                                                "cifs",
-                                                                                                "nfsv3",
-                                                                                                "nfsv4",
-                                                                                                "nfsv41",
-                                                                                                "allowedClients"
-                                                                                            ],
+                                                                                            "required": [],
                                                                                             "type": "object"
                                                                                         },
                                                                                         "type": "array"
@@ -830,17 +821,7 @@
                                                                                             "type": "string"
                                                                                         }
                                                                                     },
-                                                                                    "required": [
-                                                                                        "provisioningState",
-                                                                                        "mountTargetId",
-                                                                                        "fileSystemId",
-                                                                                        "startIp",
-                                                                                        "endIp",
-                                                                                        "gateway",
-                                                                                        "netmask",
-                                                                                        "subnet",
-                                                                                        "ipAddress"
-                                                                                    ],
+                                                                                    "required": [],
                                                                                     "type": "object"
                                                                                 },
                                                                                 "type": "array"
