@@ -6,6 +6,10 @@
             "defaultValue": "ANFAutoAlerts",
             "type": "String"
         },
+         "Location": {
+            "defaultValue": "eastus2",
+            "type": "String"
+        },
         "Target Resource Group for Alerts": {
             "defaultValue": "Alerts.rg",
             "type": "String"
@@ -32,7 +36,7 @@
         "type": "Microsoft.Logic/workflows",
         "apiVersion": "2017-07-01",
         "name": "[parameters('Logic App Name')]",
-        "location": "eastus2",
+        "location": "[parameters('Location')]",
         "identity": {
             "principalId": "",
             "tenantId": "",
