@@ -2,7 +2,7 @@
 
 # ANFAutoAlerts
 
-<img src="./img/10201-icon-service-Logic-Apps.svg" alt="Logic App Icon" height="80">
+<img src="./img/10201-icon-service-Logic-Apps.svg" alt="Logic App Icon" height="50">
 
 ### An Azure Logic App that automates the creation, updating, and deleting of capacity based alerts for Azure NetApp Files.
 
@@ -14,11 +14,17 @@
 4. When an Azure NetApp Files Volume is resized, ANFAutoAlerts modifies an alert rule based on the specified percent capacity consumed. If the alert rule does not exist, it will be created.
 5. When an Azure NetApp Files Capacity Pool or Volume is deleted, the corresponding alert(s) will also be deleted.
 
-### Things it does not do, that I would like it to do in the future...
+## Things it does not do, that I would like it to do in the future
 
-1. <del>Delete alert rules when a capacity pool or volume is deleted.</del> It does this now.
-2. <del>Fully</del> More automated deployment. Getting better. I'd like to eliminate step 2.
+1. Act on existing Capacity Pools and Volumes
+2. Allow for individual volume percent overrides via a tag or some other mechanism
 3. **Suggestions?**
+
+### Prerequisites and Permissions
+
+The Logic App will need 'reader' access to your ANF resrouce group and 'contributor' to the resource group where it will be creating the alerts. If you are using the same resource group for both, the Logic App will need 'contributor' access to that resource group.
+
+You will need to have an Alert Action group already created prior to installing the Logic App. This Action group will be associated with all capacity based alerts that get created by the Logic App. As an exmaple, this action group may send an email or SMS alert when a Capacity Pool or Volume has reached the full threshold.
 
 # Installation
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FANFTechTeam%2FANFAutoAlerts%2Fmaster%2Fanfautoalerts.json)
