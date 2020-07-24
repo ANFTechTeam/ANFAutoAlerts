@@ -1,3 +1,5 @@
+![Logic App Icon](./img/10201-icon-service-Logic-Apps.svg)
+
 # ANFAutoAlerts
 ### An Azure Logic App that automates the creation, updating, and deleting of capacity based alerts for Azure NetApp Files.
 
