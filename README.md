@@ -40,6 +40,7 @@ You will need to have an Alert Action group already created prior to installing 
 	* *Target Resource Group to Monitor*; this is the resource group that will be monitored for new ANF resources.
    * *Capacity Pool % Full Threshold*; This determines the consumed threshold that triggers an alert for capacity pools. A value of 90 would cause an alert to be triggered when the capacity pool reaches 90% consumed.
    * *Volume % Full Threshold*; This determines the consumed threshold that triggers an alert for volumes. A value of 80 would cause an alert to be triggered when the volume reaches 80% consumed.
+   * *Existing Action Group's Resource Group*; this is the resource group that contains your existing Action Group.
 	* *Existing Action Group for Capacity Notifications*; this is the action group that will be triggered for capacity based alerting. This should be pre-created by you. This action group could send email/sms/webhook, or anything else you would like. If it doesn't exist at the time of deployment, that is fine, as long as you create it before you continue to step 2.
 
 ![Deploy Fields](./img/deploy.png)
