@@ -15,7 +15,7 @@
             "type": "String"
         },
         "Target Resource Group to Monitor (blank to monitor entire subscription)": {
-            "defaultValue": "MonitorThis.rg",
+            "defaultValue": "",
             "type": "String"
         },
         "Capacity Pool % Full Threshold": {
