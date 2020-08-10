@@ -340,7 +340,7 @@
                                 {
                                     "name": "action_group",
                                     "type": "string",
-                                    "value": "[parameters('Target Resource Group for Alerts')]"
+                                    "value": "[parameters('Existing Action Group Name for Capacity Notifications')]"
                                 }
                             ]
                         }
@@ -391,7 +391,7 @@
                                 {
                                     "name": "target_rg",
                                     "type": "string",
-                                    "value": "[parameters('Target Resource Group to Monitor (blank to monitor entire subscription)')]"
+                                    "value": "[parameters('Target Resource Group for Alerts')]"
                                 }
                             ]
                         }
@@ -407,7 +407,8 @@
                             "variables": [
                                 {
                                     "name": "monitor_rg",
-                                    "type": "string"
+                                    "type": "string",
+                                    "value": "[parameters('Target Resource Group to Monitor (blank to monitor entire subscription)')]"
                                 }
                             ]
                         }
