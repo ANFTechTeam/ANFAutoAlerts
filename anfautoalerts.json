@@ -207,6 +207,34 @@
                             ]
                         }
                     },
+                    "Check_if_Scope_is_Sub_or_Resource_Group": {
+                        "actions": {
+                            "Set_resourcesuffix_to_monitorrg": {
+                                "runAfter": {},
+                                "type": "SetVariable",
+                                "inputs": {
+                                    "name": "resourcesuffix",
+                                    "value": "_@{variables('monitor_rg')}"
+                                }
+                            }
+                        },
+                        "runAfter": {
+                            "Should_we_Process_Existing_Resources": [
+                                "Succeeded"
+                            ]
+                        },
+                        "expression": {
+                            "and": [
+                                {
+                                    "greater": [
+                                        "@length(variables('monitor_rg'))",
+                                        0
+                                    ]
+                                }
+                            ]
+                        },
+                        "type": "If"
+                    },
                     "Get_Workflow_Properties": {
                         "runAfter": {
                             "Set_Existing_Action_Group_for_Alerts": [
@@ -220,6 +248,22 @@
                                     "name": "workflowproperties",
                                     "type": "object",
                                     "value": "@workflow()"
+                                }
+                            ]
+                        }
+                    },
+                    "Initialize_Logic_App_Resource_Group": {
+                        "runAfter": {
+                            "Initialize_Resource_Suffix": [
+                                "Succeeded"
+                            ]
+                        },
+                        "type": "InitializeVariable",
+                        "inputs": {
+                            "variables": [
+                                {
+                                    "name": "logicapprg",
+                                    "type": "string"
                                 }
                             ]
                         }
@@ -242,7 +286,7 @@
                     },
                     "Initialize_Variable_to_Store_Scope_of_this_Run": {
                         "runAfter": {
-                            "Set_Logic_App_Resource_Group": [
+                            "Set_Subscription_ID": [
                                 "Succeeded"
                             ]
                         },
@@ -345,23 +389,6 @@
                             ]
                         }
                     },
-                    "Set_Logic_App_Resource_Group": {
-                        "runAfter": {
-                            "Set_Subscription_ID": [
-                                "Succeeded"
-                            ]
-                        },
-                        "type": "InitializeVariable",
-                        "inputs": {
-                            "variables": [
-                                {
-                                    "name": "logicapprg",
-                                    "type": "string",
-                                    "value": "@{split(body('Parse_Workflow_Properties')?['id'],'/')[4]}"
-                                }
-                            ]
-                        }
-                    },
                     "Set_Subscription_ID": {
                         "runAfter": {
                             "Parse_Workflow_Properties": [
@@ -432,7 +459,7 @@
                     },
                     "Should_we_Process_Existing_Resources": {
                         "runAfter": {
-                            "Initialize_Resource_Suffix": [
+                            "Initialize_Logic_App_Resource_Group": [
                                 "Succeeded"
                             ]
                         },
@@ -1164,13 +1191,163 @@
                             }
                         },
                         "runAfter": {
-                            "Should_we_Process_Existing_Resources": [
+                            "Check_if_Scope_is_Sub_or_Resource_Group": [
                                 "Succeeded"
                             ]
                         },
                         "else": {
                             "actions": {
-                                "Condition": {
+                                "Get_SubID_Details": {
+                                    "runAfter": {
+                                        "Parse_this_Logic_App_Details": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Http",
+                                    "inputs": {
+                                        "authentication": {
+                                            "type": "ManagedServiceIdentity"
+                                        },
+                                        "method": "GET",
+                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}?api-version=2020-01-01"
+                                    }
+                                },
+                                "Get_Webhook_URL_of_this_Logic_App": {
+                                    "runAfter": {
+                                        "Set_Logic_App_Resource_Group": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Http",
+                                    "inputs": {
+                                        "authentication": {
+                                            "type": "ManagedServiceIdentity"
+                                        },
+                                        "method": "POST",
+                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('logicapprg')}/providers/Microsoft.Logic/workflows/@{workflow().name}/triggers/manual/listcallbackurl?api-version=2016-06-01"
+                                    }
+                                },
+                                "Parse_SubID_Details": {
+                                    "runAfter": {
+                                        "Get_SubID_Details": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "ParseJson",
+                                    "inputs": {
+                                        "content": "@body('Get_SubID_Details')",
+                                        "schema": {
+                                            "properties": {
+                                                "authorizationSource": {
+                                                    "type": "string"
+                                                },
+                                                "displayName": {
+                                                    "type": "string"
+                                                },
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "managedByTenants": {
+                                                    "type": "array"
+                                                },
+                                                "state": {
+                                                    "type": "string"
+                                                },
+                                                "subscriptionId": {
+                                                    "type": "string"
+                                                },
+                                                "subscriptionPolicies": {
+                                                    "properties": {
+                                                        "locationPlacementId": {
+                                                            "type": "string"
+                                                        },
+                                                        "quotaId": {
+                                                            "type": "string"
+                                                        },
+                                                        "spendingLimit": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "tenantId": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "Parse_this_Logic_App_Details": {
+                                    "runAfter": {
+                                        "Get_Webhook_URL_of_this_Logic_App": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "ParseJson",
+                                    "inputs": {
+                                        "content": "@body('Get_Webhook_URL_of_this_Logic_App')",
+                                        "schema": {
+                                            "properties": {
+                                                "basePath": {
+                                                    "type": "string"
+                                                },
+                                                "method": {
+                                                    "type": "string"
+                                                },
+                                                "queries": {
+                                                    "properties": {
+                                                        "api-version": {
+                                                            "type": "string"
+                                                        },
+                                                        "sig": {
+                                                            "type": "string"
+                                                        },
+                                                        "sp": {
+                                                            "type": "string"
+                                                        },
+                                                        "sv": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "value": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "Set_Logic_App_Resource_Group": {
+                                    "runAfter": {},
+                                    "type": "SetVariable",
+                                    "inputs": {
+                                        "name": "logicapprg",
+                                        "value": "@{split(body('Parse_Workflow_Properties')?['id'],'/')[4]}"
+                                    }
+                                },
+                                "Test_if_ExistingResources_is_set_to_True": {
+                                    "actions": {},
+                                    "runAfter": {
+                                        "Test_if_Scope_if_Sub_or_RG": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "expression": {
+                                        "and": [
+                                            {
+                                                "equals": [
+                                                    "@variables('existingresources')",
+                                                    "@true"
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "type": "If"
+                                },
+                                "Test_if_Scope_if_Sub_or_RG": {
                                     "actions": {
                                         "Create_ANFAutoAlerts_Alert_Group": {
                                             "runAfter": {
@@ -1864,125 +2041,6 @@
                                         ]
                                     },
                                     "type": "If"
-                                },
-                                "Get_SubID_Details": {
-                                    "runAfter": {
-                                        "Parse_this_Logic_App_Details": [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "type": "Http",
-                                    "inputs": {
-                                        "authentication": {
-                                            "type": "ManagedServiceIdentity"
-                                        },
-                                        "method": "GET",
-                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}?api-version=2020-01-01"
-                                    }
-                                },
-                                "Get_Webhook_URL_of_this_Logic_App": {
-                                    "runAfter": {},
-                                    "type": "Http",
-                                    "inputs": {
-                                        "authentication": {
-                                            "type": "ManagedServiceIdentity"
-                                        },
-                                        "method": "POST",
-                                        "uri": "https://management.azure.com/subscriptions/@{variables('subid')}/resourceGroups/@{variables('logicapprg')}/providers/Microsoft.Logic/workflows/@{workflow().name}/triggers/manual/listcallbackurl?api-version=2016-06-01"
-                                    }
-                                },
-                                "Parse_SubID_Details": {
-                                    "runAfter": {
-                                        "Get_SubID_Details": [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "type": "ParseJson",
-                                    "inputs": {
-                                        "content": "@body('Get_SubID_Details')",
-                                        "schema": {
-                                            "properties": {
-                                                "authorizationSource": {
-                                                    "type": "string"
-                                                },
-                                                "displayName": {
-                                                    "type": "string"
-                                                },
-                                                "id": {
-                                                    "type": "string"
-                                                },
-                                                "managedByTenants": {
-                                                    "type": "array"
-                                                },
-                                                "state": {
-                                                    "type": "string"
-                                                },
-                                                "subscriptionId": {
-                                                    "type": "string"
-                                                },
-                                                "subscriptionPolicies": {
-                                                    "properties": {
-                                                        "locationPlacementId": {
-                                                            "type": "string"
-                                                        },
-                                                        "quotaId": {
-                                                            "type": "string"
-                                                        },
-                                                        "spendingLimit": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                },
-                                                "tenantId": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    }
-                                },
-                                "Parse_this_Logic_App_Details": {
-                                    "runAfter": {
-                                        "Get_Webhook_URL_of_this_Logic_App": [
-                                            "Succeeded"
-                                        ]
-                                    },
-                                    "type": "ParseJson",
-                                    "inputs": {
-                                        "content": "@body('Get_Webhook_URL_of_this_Logic_App')",
-                                        "schema": {
-                                            "properties": {
-                                                "basePath": {
-                                                    "type": "string"
-                                                },
-                                                "method": {
-                                                    "type": "string"
-                                                },
-                                                "queries": {
-                                                    "properties": {
-                                                        "api-version": {
-                                                            "type": "string"
-                                                        },
-                                                        "sig": {
-                                                            "type": "string"
-                                                        },
-                                                        "sp": {
-                                                            "type": "string"
-                                                        },
-                                                        "sv": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                },
-                                                "value": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    }
                                 }
                             }
                         },
