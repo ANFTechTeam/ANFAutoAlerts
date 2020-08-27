@@ -1,8 +1,6 @@
-
+# ANFAutoAlerts has been deprecated. [ANFCapacityManager](https://github.com/ANFTechTeam/ANFCapacityManager) will continue to be developed going forward. [ANFCapacityManager](https://github.com/ANFTechTeam/ANFCapacityManager) builds on the functionality of ANFAutoAlerts by adding auto grow capabilities in addition to processing existing resources. Go check it out [here](https://github.com/ANFTechTeam/ANFCapacityManager).
 
 # ANFAutoAlerts
-
-
 
 ### <img src="./img/10201-icon-service-Logic-Apps.svg" align="left" alt="Logic App Icon" height="50" style="margin: 10px 0 0 0; " />An Azure Logic App that automates the creation, updating, and deleting of capacity based alerts for Azure NetApp Files.
 
